@@ -1,0 +1,8 @@
+services:
+  fastapi2:
+    tty: true
+    image: python
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/fastapi
