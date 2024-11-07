@@ -1,3 +1,9 @@
-@app.get("/")
-def prueba() :
-    return {"mensaje": "Este es un mensaje de prueba"}
+from fastapi import APIRouter
+
+routes = APIRouter()
+
+@routes.get("/")
+async def root():
+    return {"message": "Hello, World!",
+            'swagger': '/docs',
+            'redoc': '/redoc'}

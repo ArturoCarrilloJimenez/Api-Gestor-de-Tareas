@@ -1,11 +1,15 @@
 from fastapi import FastAPI
-from starlette import status
+
+from routes.route import routes
+
+import model.model as Models
+from configs.db import engine
 
 app = FastAPI()
 
-@app.get("/")
-def prueba() :
-    return {"mensaje": "Este es un mensaje de prueba"}
+Models.Base.metadata.create_all(bind=engine)
+
+app.include_router(routes)
 
 if __name__ == '__main__' :
     import uvicorn

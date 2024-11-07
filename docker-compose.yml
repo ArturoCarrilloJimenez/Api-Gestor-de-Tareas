@@ -6,7 +6,7 @@ services:
     image: python
     container_name: fastapi_app
     ports:
-      - "8000:80"
+      - "8000:8000"
     volumes:
       - .:/fastapi
     depends_on:
