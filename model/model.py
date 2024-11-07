@@ -7,14 +7,14 @@ import uuid
 from configs.db import Base
 
 # Clases del modelo pydantic
-class Users(BaseModel) :
+class UsersPy(BaseModel) :
     id : str
     name : str
     email : str
     username : str
     password : str
 
-class Task(BaseModel) :
+class TaskPy(BaseModel) :
     id : str
     title : str
     description : str
@@ -32,7 +32,7 @@ class Users(Base) :
     username = Column(VARCHAR(180), nullable=False)
     password = Column(VARCHAR(180), nullable=False)
 
-    user = relationship('Task', back_populates='users')
+    tasks = relationship("Task", back_populates="user")
 
 class Task(Base) :
     __tablename__ = 'tareas'
@@ -44,5 +44,5 @@ class Task(Base) :
     completed = Column(Boolean, default=False)
     user_id = Column(CHAR(32), ForeignKey('users.id'), nullable=False)
 
-    user = relationship('Users', back_populates='tareas')
+    user = relationship("Users", back_populates="tasks")
     
