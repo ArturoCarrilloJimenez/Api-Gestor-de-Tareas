@@ -27,8 +27,6 @@ async def get_tareas(user_id: str, db: Session = Depends(get_db)) -> list[TaskPy
 @routesCrudTask.post('/add', status_code=status.HTTP_201_CREATED, response_model=list[TaskPy])
 async def add_tarea(task: TaskPy, db: Session = Depends(get_db)) -> list[TaskPy] :
 
-    # Realizar la comprobación del usuario
-
     newTask = TaskSql(title = task.title, description = task.description, user_id = task.user_id)
     db.add(newTask)
     db.commit()

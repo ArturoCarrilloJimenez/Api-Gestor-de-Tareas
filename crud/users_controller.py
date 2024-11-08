@@ -13,11 +13,6 @@ routesCrudUser = APIRouter(prefix='/users', tags=['Usuarios'])
 # Configuro la función de hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# Obtengo todos los usuarios
-@routesCrudUser.get('/', status_code=status.HTTP_200_OK, response_model=list[UsersPy])
-async def user(db: Session = Depends(get_db)) -> list[UsersPy] :
-    return db.query(UsersSql).all()
-
 # Obtengo un usuario en concreto
 @routesCrudUser.get('/{id}', status_code=status.HTTP_200_OK, response_model=UsersPy)
 async def get_user_by_id(id: str, db: Session = Depends(get_db)) -> UsersPy :
