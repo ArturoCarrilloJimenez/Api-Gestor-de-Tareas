@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 # Clases del modelo pydantic
 class UsersPy(BaseModel) :
@@ -6,7 +6,7 @@ class UsersPy(BaseModel) :
     name : str
     email : str
     username : str
-    password : str
+    password : str = Field(default=None)
 
 class TaskPy(BaseModel) :
     id : str

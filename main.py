@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from crud.tareas_controller import routesCrudTask
-from crud.users_controller import routesCrudUser
-from utils.auth import auth_routes
+from routes.crud.tareas_controller import routesCrudTask
+from routes.crud.users_controller import routesCrudUser
+from routes.auth import auth_routes
 
 import model.model as Models
 from configs.db import engine

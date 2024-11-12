@@ -1,14 +1,15 @@
 from fastapi import APIRouter, HTTPException, Depends
 from starlette import status
-
 from sqlalchemy.orm import Session
+
+from middlewares.verify_token_route import VerifyTokenRoute
 from model.model import TaskSql
 from schemas.schemas import TaskPy
 
 from configs.db import get_db
-from crud.users_controller import get_user_by_id
+from routes.crud.users_controller import get_user_by_id
 
-routesCrudTask = APIRouter(prefix='/tasks', tags=['Tareas'])
+routesCrudTask = APIRouter(prefix='/tasks', tags=['Tareas'], route_class=VerifyTokenRoute)
 
 
 # Obtengo las tareas de un usuario especifico

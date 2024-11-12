@@ -1,10 +1,11 @@
 from fastapi import APIRouter, HTTPException, Depends
 from starlette import status
-
 from sqlalchemy.orm import Session
-from configs.db import get_db
+
 from model.model import UsersSql
 from schemas.schemas import UsersPy
+
+from configs.db import get_db
 from utils.hashing import hashing
 
 routesCrudUser = APIRouter(prefix='/users', tags=['Usuarios'])
