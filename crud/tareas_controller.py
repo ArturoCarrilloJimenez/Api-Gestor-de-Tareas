@@ -2,18 +2,14 @@ from fastapi import APIRouter, HTTPException, Depends
 from starlette import status
 
 from sqlalchemy.orm import Session
-from configs.db import get_db
 from model.model import TaskSql
 from schemas.schemas import TaskPy
 
+from configs.db import get_db
 from crud.users_controller import get_user_by_id
 
 routesCrudTask = APIRouter(prefix='/tasks', tags=['Tareas'])
 
-# Obtengo todas las tareas
-@routesCrudTask.get('/', status_code=status.HTTP_200_OK, response_model=list[TaskPy])
-def get_tareas(db: Session = Depends(get_db)) -> list[TaskPy] :
-    return db.query(TaskSql).all()
 
 # Obtengo las tareas de un usuario especifico
 @routesCrudTask.get('/{user_id}', status_code=status.HTTP_200_OK, response_model=list[TaskPy])
@@ -23,15 +19,29 @@ async def get_tareas(user_id: str, db: Session = Depends(get_db)) -> list[TaskPy
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Usuario no encontrado')
     return result
 
+
+# Obtengo una tarea de un usuario especifico
+@routesCrudTask.get('/{user_id}/{task_id}', status_code=status.HTTP_200_OK, response_model=TaskPy)
+async def get_tarea_by_id(task_id: str, user_id: str, db: Session = Depends(get_db)) -> TaskPy :
+    result = db.query(TaskSql).filter(TaskSql.user_id == user_id, TaskSql.id == task_id).first()
+    if not result:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Tarea no encontrado')
+    return result
+
+
 # Añado una tarea
 @routesCrudTask.post('/add', status_code=status.HTTP_201_CREATED, response_model=list[TaskPy])
 async def add_tarea(task: TaskPy, db: Session = Depends(get_db)) -> list[TaskPy] :
+
+    user_id: str = task.user_id
+    await get_user_by_id(user_id, db)
 
     newTask = TaskSql(title = task.title, description = task.description, user_id = task.user_id)
     db.add(newTask)
     db.commit()
     db.refresh(newTask)
     return db.query(TaskSql).filter(TaskSql.user_id == task.user_id).all()
+
 
 # Actualizo una tarea
 @routesCrudTask.put('/update/{id}', status_code=status.HTTP_200_OK, response_model=TaskPy)
@@ -49,6 +59,7 @@ async def update_tarea(id: str,task: TaskPy, db: Session = Depends(get_db)) -> T
         return response
     
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Tarea no encontrado')
+
 
 # Elimino una tarea
 @routesCrudTask.delete('/delete/{id}', status_code=status.HTTP_200_OK, response_model=TaskPy)

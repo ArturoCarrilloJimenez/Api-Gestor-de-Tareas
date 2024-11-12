@@ -1,17 +1,14 @@
 from fastapi import APIRouter, HTTPException, Depends
 from starlette import status
 
-from passlib.context import CryptContext 
-
 from sqlalchemy.orm import Session
 from configs.db import get_db
 from model.model import UsersSql
 from schemas.schemas import UsersPy
+from utils.hashing import hashing
 
 routesCrudUser = APIRouter(prefix='/users', tags=['Usuarios'])
 
-# Configuro la función de hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Obtengo un usuario en concreto
 @routesCrudUser.get('/{id}', status_code=status.HTTP_200_OK, response_model=UsersPy)
@@ -20,6 +17,7 @@ async def get_user_by_id(id: str, db: Session = Depends(get_db)) -> UsersPy :
     if not result:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Usuario no encontrado')
     return result
+
 
 # Añado un usuario con las validaciones necesarias
 @routesCrudUser.post('/add', status_code=status.HTTP_201_CREATED, response_model=list[UsersPy])
@@ -35,7 +33,7 @@ async def add_user(user: UsersPy, db: Session = Depends(get_db)) -> list[UsersPy
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='El nombre de usuario ya ha sido registrado')
     
     # Añado el usuario
-    newUsers = UsersSql(name= user.name, email = user.email, username = user.username, password = pwd_context.hash(user.password))
+    newUsers = UsersSql(name= user.name, email = user.email, username = user.username, password = hashing(user.password))
     db.add(newUsers)
     db.commit()
     db.refresh(newUsers)

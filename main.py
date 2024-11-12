@@ -1,14 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routes.route import routes
 from crud.tareas_controller import routesCrudTask
 from crud.users_controller import routesCrudUser
+from utils.auth import auth_routes
 
 import model.model as Models
 from configs.db import engine
 
-app = FastAPI()
+app = FastAPI(title='Api Gestor de Tareas', version='1.0')
 
 origins = [
     "http://localhost.tiangolo.com",
@@ -28,9 +28,9 @@ app.add_middleware(
 Models.Base.metadata.create_all(bind=engine)
 
 # Importación de las rutas
-app.include_router(routes)
 app.include_router(routesCrudTask)
 app.include_router(routesCrudUser)
+app.include_router(auth_routes)
 
 if __name__ == '__main__' :
     import uvicorn

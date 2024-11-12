@@ -17,7 +17,7 @@ class UsersSql(Base) :
     password = Column(CHAR(60), nullable=False)
 
     tasks = relationship("TaskSql", back_populates="user")
-
+    
 class TaskSql(Base) :
     __tablename__ = 'tareas'
 
