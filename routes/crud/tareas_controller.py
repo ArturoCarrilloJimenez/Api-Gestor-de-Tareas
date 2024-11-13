@@ -45,9 +45,9 @@ async def add_tarea(task: TaskPy, db: Session = Depends(get_db)) -> list[TaskPy]
 
 
 # Actualizo una tarea
-@routesCrudTask.put('/update/{id}', status_code=status.HTTP_200_OK, response_model=TaskPy)
-async def update_tarea(id: str,task: TaskPy, db: Session = Depends(get_db)) -> TaskPy :
-    response = db.query(TaskSql).filter(TaskSql.id == id).first()
+@routesCrudTask.put('/update/{user_id}/{task_id}', status_code=status.HTTP_200_OK, response_model=TaskPy)
+async def update_tarea(task_id: str, user_id: str, task: TaskPy, db: Session = Depends(get_db)) -> TaskPy :
+    response = db.query(TaskSql).filter(TaskSql.user_id == user_id, TaskSql.id == task_id).first()
 
     if response :
 
@@ -63,9 +63,9 @@ async def update_tarea(id: str,task: TaskPy, db: Session = Depends(get_db)) -> T
 
 
 # Elimino una tarea
-@routesCrudTask.delete('/delete/{id}', status_code=status.HTTP_200_OK, response_model=TaskPy)
-async def delete_tarea(id: str, db : Session = Depends(get_db)) -> TaskPy :
-    result = db.query(TaskSql).filter(TaskSql.id == id).first()
+@routesCrudTask.delete('/delete/{user_id}/{task_id}', status_code=status.HTTP_200_OK, response_model=TaskPy)
+async def delete_tarea(task_id: str, user_id: str, db : Session = Depends(get_db)) -> TaskPy :
+    result = db.query(TaskSql).filter(TaskSql.user_id == user_id, TaskSql.id == task_id).first()
     if result :
         db.delete(result)
         db.commit()
