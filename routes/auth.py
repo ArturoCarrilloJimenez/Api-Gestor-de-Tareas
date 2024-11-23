@@ -20,7 +20,7 @@ def login(user: UsersPy, db: Session = Depends(get_db)):
         userPy: UsersPy = UsersPy(id = result.id, username = result.username)
         return write_token(userPy.dict())
     else:
-        return JSONResponse(content={"detail": "User not found"}, status_code=404)
+        return JSONResponse(content={"detail": "Usuario o contraseña invalida"}, status_code=404)
 
 
 # Verifico el token creado anteriormente
